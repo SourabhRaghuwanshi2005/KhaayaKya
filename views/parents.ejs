@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KhaayaKya — Parents</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <!-- NAVBAR -->
+  <nav class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">💊</span>
+        <h1 class="text-xl font-bold text-gray-800">KhaayaKya</h1>
+      </div>
+      <div class="flex items-center gap-4">
+        <a href="/dashboard" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+          ← Dashboard
+        </a>
+        <a href="/logout"
+           class="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded-lg transition">
+          Logout
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="max-w-5xl mx-auto px-6 py-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">👴 My Parents</h2>
+
+    <!-- SUCCESS / ERROR -->
+    <% if (error) { %>
+      <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-5 text-sm">
+        ⚠️ <%= error %>
+      </div>
+    <% } %>
+    <% if (success) { %>
+      <div class="bg-green-50 border border-green-200 text-green-700 rounded-lg px-4 py-3 mb-5 text-sm">
+        ✅ <%= success %>
+      </div>
+    <% } %>
+
+    <!-- ADD PARENT FORM -->
+    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm mb-8">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">Add New Parent</h3>
+      <form action="/parents/add" method="POST" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input type="text" name="name" required placeholder="e.g. Papa"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm
+                          focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">WhatsApp Number</label>
+            <input type="text" name="phone" required placeholder="+919876543210"
+                   class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm
+                          focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Relationship</label>
+            <select name="relationship" required
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm
+                           focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="">Select</option>
+              <option value="Father">Father</option>
+              <option value="Mother">Mother</option>
+              <option value="Grandfather">Grandfather</option>
+              <option value="Grandmother">Grandmother</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+        <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold
+                       px-6 py-2.5 rounded-lg transition text-sm">
+          Add Parent →
+        </button>
+      </form>
+    </div>
+
+    <!-- PARENTS LIST -->
+    <% if (parents.length === 0) { %>
+      <div class="bg-white rounded-xl border border-gray-200 p-8 text-center">
+        <p class="text-gray-400 text-lg mb-2">No parents added yet</p>
+        <p class="text-gray-400 text-sm">Add your first parent above to get started</p>
+      </div>
+    <% } else { %>
+      <div class="space-y-4">
+        <% parents.forEach(parent => { %>
+          <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm
+                      flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center 
+                          justify-content center text-2xl">
+                <%= parent.relationship === 'Father' ? '👴' : 
+                    parent.relationship === 'Mother' ? '👵' : '👤' %>
+              </div>
+              <div>
+                <h3 class="font-bold text-gray-800 text-lg"><%= parent.name %></h3>
+                <p class="text-sm text-gray-500"><%= parent.relationship %></p>
+                <p class="text-sm text-gray-400">📱 <%= parent.phone %></p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <a href="/medicines/<%= parent._id %>"
+                 class="bg-blue-50 hover:bg-blue-100 text-blue-700 text-sm font-medium
+                        px-4 py-2 rounded-lg transition">
+                💊 Medicines
+              </a>
+              <a href="/insights/<%= parent._id %>"
+                 class="bg-purple-50 hover:bg-purple-100 text-purple-700 text-sm font-medium
+                        px-4 py-2 rounded-lg transition">
+                🧠 Insights
+              </a>
+              <form action="/parents/delete/<%= parent._id %>" method="POST">
+                <button type="submit"
+                        onclick="return confirm('Delete <%= parent.name %>?')"
+                        class="bg-red-50 hover:bg-red-100 text-red-600 text-sm font-medium
+                               px-4 py-2 rounded-lg transition">
+                  🗑️ Delete
+                </button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+
+</body>
+</html>
