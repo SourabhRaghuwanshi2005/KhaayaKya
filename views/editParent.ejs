@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KhaayaKya — Edit Parent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+
+  <nav class="bg-white shadow-sm border-b border-gray-200">
+    <div class="max-w-5xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">💊</span>
+        <h1 class="text-xl font-bold text-gray-800">KhaayaKya</h1>
+      </div>
+      <a href="/parents" class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+        ← Back to Parents
+      </a>
+    </div>
+  </nav>
+
+  <div class="max-w-lg mx-auto px-6 py-8">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Parent</h2>
+
+    <% if (error) { %>
+      <div class="bg-red-50 border border-red-200 text-red-700 rounded-lg px-4 py-3 mb-5 text-sm">
+        ⚠️ <%= error %>
+      </div>
+    <% } %>
+
+    <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+      <form action="/parents/edit/<%= parent._id %>" method="POST" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+          <input type="text" name="name" required
+                 value="<%= parent.name %>"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm
+                        focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            WhatsApp Number
+          </label>
+          <input type="text" name="phone" required
+                 value="<%= parent.phone %>"
+                 class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm
+                        focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+          <p class="text-xs text-gray-400 mt-1">Format: +919876543210</p>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Relationship</label>
+          <select name="relationship" required
+                  class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm
+                         focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="Father" <%= parent.relationship === 'Father' ? 'selected' : '' %>>Father</option>
+            <option value="Mother" <%= parent.relationship === 'Mother' ? 'selected' : '' %>>Mother</option>
+            <option value="Grandfather" <%= parent.relationship === 'Grandfather' ? 'selected' : '' %>>Grandfather</option>
+            <option value="Grandmother" <%= parent.relationship === 'Grandmother' ? 'selected' : '' %>>Grandmother</option>
+            <option value="Other" <%= parent.relationship === 'Other' ? 'selected' : '' %>>Other</option>
+          </select>
+        </div>
+        <button type="submit"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold
+                       py-2.5 rounded-lg transition text-sm">
+          Save Changes →
+        </button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>
