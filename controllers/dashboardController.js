@@ -12,16 +12,18 @@ exports.getDashboard = async (req, res) => {
     const parents = await Parent.find({ userId })
 
     // 2. get today's logs for all parents
-    const todayLogs = await Log.find({ userId, date: today })
+    const todayLogs = (await Log.find({ userId, date: today })
       .populate('medicineId')
-      .populate('parentId')
+      .populate('parentId'))
+      .filter(log => log.parentId && log.medicineId)
 
     // 3. get unread alerts
-    const alerts = await Alert.find({ userId, isRead: false })
+    const alerts = (await Alert.find({ userId, isRead: false })
       .populate('medicineId')
       .populate('parentId')
       .sort({ createdAt: -1 })
-      .limit(10)
+      .limit(10))
+      .filter(alert => alert.parentId && alert.medicineId)
 
     // 4. get all medicines
     const medicines = await Medicine.find({ userId, isActive: true })
@@ -31,6 +33,7 @@ exports.getDashboard = async (req, res) => {
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
     const sevenDaysAgoStr = sevenDaysAgo.toISOString().split('T')[0]
 
+    
     const weeklyLogs = await Log.find({
       userId,
       date: { $gte: sevenDaysAgoStr }
@@ -59,7 +62,9 @@ exports.getDashboard = async (req, res) => {
       schedule[parent._id] = {
         parent,
         logs: todayLogs.filter(
-          log => log.parentId._id.toString() === parent._id.toString()
+          log =>
+            log.parentId &&
+            log.parentId._id.toString() === parent._id.toString()
         )
       }
     })

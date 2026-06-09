@@ -1,4 +1,7 @@
 const Parent = require('../models/Parent')
+const Medicine = require('../models/Medicine')
+const Log = require('../models/Log')
+const Alert = require('../models/Alert')
 
 exports.getParents = async (req, res) => {
   try {
@@ -30,13 +33,22 @@ exports.addParent = async (req, res) => {
 
 exports.deleteParent = async (req, res) => {
   try {
+    const parentId = req.params.id;
+
     await Parent.findOneAndDelete({
-      _id: req.params.id,
+      _id: parentId,
       userId: req.user.id
-    })
-    res.redirect('/parents')
+    });
+
+    await Medicine.deleteMany({ parentId });
+
+    await Log.deleteMany({ parentId });
+
+    await Alert.deleteMany({ parentId });
+
+    res.redirect('/parents');
   } catch (err) {
-    console.error(err)
-    res.redirect('/parents')
+    console.error(err);
+    res.redirect('/parents');
   }
 }
